@@ -1,0 +1,174 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Moneda {
+  USD
+  UYU
+}
+
+enum VehiculoEstado {
+  disponible
+  reservado
+  vendido
+}
+
+enum OfertaEstado {
+  nueva
+  en_revision
+  tasada
+  rechazada
+  aceptada
+}
+
+enum Choques {
+  no
+  menores
+  importantes
+}
+
+enum DeudaPrenda {
+  no
+  deuda
+  prenda
+  ambas
+}
+
+enum EventoTipo {
+  visita
+  prueba
+  tasacion
+  entrega
+}
+
+enum Roles {
+  admin
+  empleado
+}
+
+model Categoria {
+  id             String   @id @default(cuid())
+  nombre         String   @unique
+  fecha_creacion DateTime @default(now()) @db.Timestamptz(3)
+
+  vehiculos Vehiculo[]
+
+  @@map("categoria")
+}
+
+model Vehiculo {
+  id String @id @default(cuid())
+
+  marca       String
+  modelo      String
+  version     String @default("")
+  anio        Int
+  km          Int
+  patente     String
+  combustible String
+  caja        String
+  color       String
+  motor       String
+
+  consumo         String
+  potencia        String
+  caracteristicas String[]
+
+  categoria_id String
+  categoria    Categoria @relation(fields: [categoria_id], references: [id], onDelete: Restrict)
+
+  precio        Int
+  precio_compra Int?
+  moneda        Moneda
+  descripcion   String @db.Text
+
+  fotos String[]
+
+  estado VehiculoEstado @default(disponible)
+
+  fecha_creacion     DateTime  @default(now()) @db.Timestamptz(3)
+  fecha_modificacion DateTime  @updatedAt @db.Timestamptz(3)
+  fecha_vendido      DateTime? @db.Timestamptz(3)
+
+  @@index([estado, fecha_creacion(sort: Desc)])
+  @@index([fecha_creacion(sort: Desc)])
+  @@index([categoria_id])
+  @@index([fecha_vendido])
+  @@map("vehiculo")
+}
+
+model Oferta {
+  id String @id @default(cuid())
+
+  marca       String
+  modelo      String
+  version     String @default("")
+  anio        Int
+  km          Int
+  patente     String
+  combustible String
+  caja        String
+  color       String
+  motor       String
+
+  choques      Choques
+  desperfectos String  @db.Text
+  accesorios   String  @db.Text
+
+  titularidad_propia     Boolean
+  vtv_al_dia             Boolean
+  documentacion_completa Boolean
+  deuda_prenda           DeudaPrenda
+  tiene_multas           Boolean
+  duenos                 Int
+
+  nombre   String
+  telefono String
+
+  estado         OfertaEstado @default(nueva)
+  fecha_creacion DateTime     @default(now()) @db.Timestamptz(3)
+
+  tasacion_interna Int?
+  nota_interna     String?
+
+  @@index([fecha_creacion(sort: Desc)])
+  @@index([estado])
+  @@map("oferta")
+}
+
+model Evento {
+  id       String     @id @default(cuid())
+  tipo     EventoTipo
+  cliente  String
+  telefono String
+  vehiculo String
+  inicio   DateTime   @db.Timestamptz(3)
+  fin      DateTime   @db.Timestamptz(3)
+  nota     String     @default("") @db.Text
+
+  fecha_creacion     DateTime @default(now()) @db.Timestamptz(3)
+  fecha_modificacion DateTime @updatedAt @db.Timestamptz(3)
+
+  @@index([inicio])
+  @@map("evento")
+}
+
+model Usuario {
+  id String @id @default(cuid())
+
+  email           String  @unique
+  contrasena      String?
+  nombre_completo String
+  rol             Roles @default(empleado)
+  activo          Boolean @default(true)
+  historias       Int     @default(0)
+
+  fecha_creacion     DateTime @default(now()) @db.Timestamptz(3)
+  fecha_modificacion DateTime @updatedAt @db.Timestamptz(3)
+
+  @@map("usuario")
+}
