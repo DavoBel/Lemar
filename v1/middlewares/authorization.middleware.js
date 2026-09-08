@@ -1,22 +1,15 @@
 import jwt from "jsonwebtoken";
+import { AppError } from "../utils/AppError.js";
 
 export const authorizationMiddleware = (req, res, next) => {
 
-    const auth = req.headers.authorization
-    if (!auth) {
-        return res.status(401).json({ message: "No hay header de autorización" });
-    }
+    const token = req.cookies?.token;
+    if (!token) return next(new AppError(401, "No hay sesión activa. Inicie sesión nuevamente."));
 
-    const token = auth.split(" ")[1];
-    if (!token) {
-        return res.status(401).json({ message: "No hay token" });
-    }
-
-    jwt.verify(token, process.env.SECRET_JWT, (err, decoded) => {
-        if (err) {
-            return res.status(401).json({ message: "Token inválido" });
-        }
-        req.user = decoded;
+    try {
+        req.usuario = jwt.verify(token, process.env.SECRET_JWT);
         next();
-    });
+    } catch {
+        next(new AppError(401, "Sesión inválida o expirada. Inicie sesión nuevamente."));
+    }
 }
