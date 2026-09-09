@@ -1,4 +1,4 @@
-import { getCategoriasService, agregarCategoriaService, getCategoriaXNombreService } from "../services/categoria.services.js";
+import { getCategoriasService, agregarCategoriaService, getCategoriaXNombreService, eliminarCategoriaService } from "../services/categoria.services.js";
 import { AppError } from "../utils/AppError.js";
 
 export const obtenerCategorias = async (req, res) => {
@@ -12,4 +12,10 @@ export const agregarCategoria = async (req, res) => {
     if (existente) throw new AppError(409, `Ya existe una categoría llamada "${existente.nombre}".`);
     const nuevaCategoria = await agregarCategoriaService(nombre);
     res.status(201).json(nuevaCategoria);
+};
+
+export const eliminarCategoria = async (req, res) => {
+    const { id } = req.params;
+    await eliminarCategoriaService(id);
+    res.status(204).send();
 };

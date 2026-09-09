@@ -19,3 +19,6 @@ export const agregarCategoriaService = async (nombre) => {
     return prisma.categoria.create({ data: { nombre } });
 }
 
+export const eliminarCategoriaService = async (id) => {
+    await prisma.categoria.delete({ where: { id } });
+}
