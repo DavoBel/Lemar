@@ -20,3 +20,11 @@ export const login = async (req, res) =>{
     const usuarioDTO = new UsuarioDTO(usuario);
     res.status(200).json({ ...usuarioDTO });
 }
+
+export const obtenerUsuarioActual = async (req, res) => {
+    const usuario = req.usuario;
+    if(!usuario) throw new AppError(401, "No hay sesión activa. Inicie sesión nuevamente.");
+    const usuarioCompleto = await getUsuarioXEmail(usuario.email);
+    const usuarioDTO = new UsuarioDTO(usuarioCompleto);
+    res.status(200).json({ ...usuarioDTO });
+}
