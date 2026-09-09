@@ -28,3 +28,14 @@ export const obtenerUsuarioActual = async (req, res) => {
     const usuarioDTO = new UsuarioDTO(usuarioCompleto);
     res.status(200).json({ ...usuarioDTO });
 }
+
+export const logout = async (req, res) => {
+    res.clearCookie("token", {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+    }); 
+    // clearCookie lleva los mismos atributos que la cookie xq los navegadores modernos interpretan que es una cookie nueva 
+    // a menos que coincidan todos los atributos, es decir, si no se mandan con los mimos atributos la cookie vieja seguira viva.
+    res.status(200).json({ mensaje: "Sesión cerrada." });
+};
