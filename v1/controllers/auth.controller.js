@@ -10,7 +10,7 @@ export const login = async (req, res) =>{
     const usuario = await getUsuarioXEmail(email);
     const errorCredenciales = new AppError(401, "Email o contraseña incorrectos. Contacte administrador si cree que es un error.");
     if(!usuario || !(await bcrypt.compare(contrasena, usuario.contrasena)) || !usuario.activo) throw errorCredenciales;
-    const token = jwt.sign({email: usuario.email, rol: usuario.rol}, process.env.SECRET_JWT, {expiresIn: '8h'});
+    const token = jwt.sign({id: usuario.id, email: usuario.email, rol: usuario.rol}, process.env.SECRET_JWT, {expiresIn: '8h'});
     res.cookie("token", token, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
