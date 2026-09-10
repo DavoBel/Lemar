@@ -9,7 +9,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js",
-    "dev": "nodemon server.js"
+    "dev": "nodemon server.js",
+    "check": "node -e \"import('./app.js').then(()=>console.log('OK')).catch(e=>{console.log(e.message.split('\\n')[0]);process.exit(1)})\""
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.10.0",

@@ -9,20 +9,11 @@ export class VehiculoAdminDTO {
         this.patente = vehiculo.patente;
         this.combustible = vehiculo.combustible;
         this.caja = vehiculo.caja;
-        this.color = vehiculo.color;
-        this.motor = vehiculo.motor;
-        this.consumo = vehiculo.consumo;
-        this.potencia = vehiculo.potencia;
-        this.caracteristicas = vehiculo.caracteristicas;
-        this.categoria = vehiculo.categoria?.nombre ?? null;
         this.precio = vehiculo.precio;
-        this.precio_compra = vehiculo.precio_compra;
         this.moneda = vehiculo.moneda;
-        this.descripcion = vehiculo.descripcion;
-        this.fotos = vehiculo.fotos;
+        this.foto_portada = vehiculo.fotos?.[0] ?? null;
+        this.cantidad_fotos = vehiculo.fotos?.length ?? 0;
         this.estado = vehiculo.estado;
         this.fecha_creacion = vehiculo.fecha_creacion;
-        this.fecha_modificacion = vehiculo.fecha_modificacion;
-        this.fecha_vendido = vehiculo.fecha_vendido;
     }
 }

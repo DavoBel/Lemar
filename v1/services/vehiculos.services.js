@@ -1,9 +1,10 @@
 import { prisma } from "../../db.js";
 
-const construirFiltros = ({ estado, marca, busqueda }) => {
+const construirFiltros = ({ estado, marca, categoria_id, busqueda }) => {
     const where = {};
     if (estado) where.estado = estado;
     if (marca) where.marca = { equals: marca, mode: "insensitive" };
+    if (categoria_id) where.categoria_id = categoria_id;
     if (busqueda) {
         where.OR = [
             { marca:   { contains: busqueda, mode: "insensitive" } },
@@ -19,7 +20,6 @@ export const getVehiculosService = async (filtros, limite, skip) => {
     const [datos, total] = await prisma.$transaction([
         prisma.vehiculo.findMany({
             where,
-            include: { categoria: true },
             orderBy: [
                 { estado: "asc" },
                 { fecha_creacion: "desc" },
@@ -32,3 +32,10 @@ export const getVehiculosService = async (filtros, limite, skip) => {
     ]);
     return { datos, total };
 };
+
+export const getVehiculoByIDService = async (id) => {
+    return await prisma.vehiculo.findUnique({
+        where: {id}, 
+        include:{categoria:true}
+    });
+}
