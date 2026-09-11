@@ -4,6 +4,7 @@ import authRouter from "./routes/auth.routes.js";
 import categoriasRouter from "./routes/categorias.routes.js";
 import vehiculosRouter from "./routes/vehiculos.routes.js";
 import vehiculosPublicosRouter from "./routes/vehiculos.publicos.routes.js";
+import ofertasRouter from "./routes/ofertas.routes.js";
 
 const router = express.Router({mergeParams: true});
 
@@ -14,6 +15,8 @@ router.use(authorizationMiddleware);
 //rutas protegidas
 router.use('/vehiculos', vehiculosRouter);
 router.use('/categorias', categoriasRouter);
+router.use('/ofertas', ofertasRouter);  
+
 
 
 export default router;
