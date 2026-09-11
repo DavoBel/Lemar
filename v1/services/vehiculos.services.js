@@ -38,4 +38,11 @@ export const getVehiculoByIDService = async (id) => {
         where: {id}, 
         include:{categoria:true}
     });
-}
+};
+
+export const agregarVehiculoService = async (datos) => {
+    return prisma.vehiculo.create({
+        data: datos,
+        include: { categoria: true },
+    });
+};

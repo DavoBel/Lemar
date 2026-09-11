@@ -1,7 +1,8 @@
 import { getPaginacion } from "../utils/helpers.js";
 import { VehiculoAdminDTO } from "../utils/DTOs/Vehiculo/Vehiculo.admin.dto.js";
 import { VehiculoDetalladoAdminDTO } from "../utils/DTOs/Vehiculo/Vehiculo.detallado.admin.dto.js";
-import { getVehiculosService, getVehiculoByIDService } from "../services/vehiculos.services.js";
+import { getVehiculosService, getVehiculoByIDService, agregarVehiculoService } from "../services/vehiculos.services.js";
+import { getCategoriaXIdService } from "../services/categoria.services.js";
 import { AppError } from "../utils/AppError.js";
 
 
@@ -25,4 +26,13 @@ export const obtenerVehiculoID = async (req, res) => {
     const vehiculo = await getVehiculoByIDService(id);
     if (!vehiculo) throw new AppError(404, "No se encontró el vehículo.");
     res.status(200).json(new VehiculoDetalladoAdminDTO(vehiculo));
+};
+
+export const agregarVehiculo = async (req, res) => {
+    const datos = req.validatedBody;
+    const categoria = await getCategoriaXIdService(datos.categoria_id);
+    if (!categoria) throw new AppError(400, "La categoría seleccionada no existe.");
+    datos.estado = "disponible";
+    const vehiculo = await agregarVehiculoService(datos);
+    res.status(201).json(new VehiculoDetalladoAdminDTO(vehiculo));
 };
