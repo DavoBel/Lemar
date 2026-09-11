@@ -54,3 +54,7 @@ export const editarVehiculoService = async (id, datos) => {
         include: { categoria: true },
     });
 };
+
+export const eliminarVehiculoService = async (id) => {
+    await prisma.vehiculo.delete({ where: { id } });
+};

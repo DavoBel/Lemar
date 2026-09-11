@@ -1,7 +1,7 @@
 import { getPaginacion } from "../utils/helpers.js";
 import { VehiculoAdminDTO } from "../utils/DTOs/Vehiculo/Vehiculo.admin.dto.js";
 import { VehiculoDetalladoAdminDTO } from "../utils/DTOs/Vehiculo/Vehiculo.detallado.admin.dto.js";
-import { getVehiculosService, getVehiculoByIDService, agregarVehiculoService, editarVehiculoService } from "../services/vehiculos.services.js";
+import { getVehiculosService, getVehiculoByIDService, agregarVehiculoService, editarVehiculoService, eliminarVehiculoService } from "../services/vehiculos.services.js";
 import { getCategoriaXIdService } from "../services/categoria.services.js";
 import { AppError } from "../utils/AppError.js";
 
@@ -56,4 +56,15 @@ export const editarVehiculo = async (req, res) => {
     }
     const vehiculo = await editarVehiculoService(id, datos);
     res.status(200).json(new VehiculoDetalladoAdminDTO(vehiculo));
+};
+
+export const eliminarVehiculo = async (req, res) => {
+    const { id } = req.params;
+    const vehiculo = await getVehiculoByIDService(id);
+    if (!vehiculo) throw new AppError(404, "No se encontró el vehículo.");
+    if (vehiculo.estado === "vendido") {
+        throw new AppError(409, "No se puede borrar un vehículo vendido: se perdería el historial de ventas.");
+    }
+    await eliminarVehiculoService(id);
+    res.status(204).send();
 };
