@@ -5,7 +5,7 @@ export const getPaginacion = (req, limiteFijo = null) => {
     return { limite, pagina, skip };
 };
 
-export const getLimite = req=>{
+export const getLimite = req => {
     const limite = parseInt(req.query.limite);
     if(isNaN(limite) || limite <=0){
         return 10;
@@ -16,7 +16,7 @@ export const getLimite = req=>{
     }
 }
 
-export const getPagina = req =>{
+export const getPagina = req => {
     let pagina = parseInt(req.query.pagina)  || 1;
     if(pagina < 1){
         pagina = 1;
@@ -30,3 +30,10 @@ export const construirBusqueda = (busqueda, campos) => {
         OR: campos.map((campo) => ({ [campo]: { contains: palabra, mode: "insensitive" } })),
     }));
 };
+
+export const combustibles = ["Nafta", "Diésel", "Híbrido", "Eléctrico"];
+export const cajas = ["Manual", "Automática"];
+export const monedas = ["USD", "UYU"];
+export const estadosOferta = ["nueva", "en_revision", "tasada", "rechazada", "aceptada"];
+export const anioActualMasUno = new Date().getFullYear() + 1;
+
