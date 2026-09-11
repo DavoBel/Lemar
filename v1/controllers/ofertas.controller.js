@@ -1,7 +1,8 @@
-import { getOfertasService, editarEstadoOfertaService, getOfertaByIdService, editarTasacionService } from "../services/oferta.services.js";
+import { getOfertasService, editarEstadoOfertaService, getOfertaByIdService, editarTasacionService, crearOfertaService } from "../services/oferta.services.js";
 import { AppError } from "../utils/AppError.js";
 import { ofertaToJSON } from "../utils/oferta.mapper.js";
 import { getPaginacion } from "../utils/helpers.js";
+import { ofertaFromJSON } from "../utils/oferta.mapper.js";
 
 export const obtenerOfertas = async (req, res) =>{
     const { limite, pagina, skip } = getPaginacion(req);
@@ -38,4 +39,14 @@ export const editarTasacion = async (req, res) => {
     const oferta = await editarTasacionService(id, datos);
 
     res.status(200).json(ofertaToJSON(oferta));
+};
+
+export const agregarOfertaPublica = async (req, res) => {
+    const { empresa, ...campos } = req.validatedBody;
+    if (empresa) return res.status(201).json({ ok: true });
+
+    const datos = ofertaFromJSON(campos);
+    await crearOfertaService(datos);
+
+    res.status(201).json({ ok: true });
 };

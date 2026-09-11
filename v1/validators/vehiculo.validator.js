@@ -1,9 +1,5 @@
 import joi from "joi";
-
-const COMBUSTIBLES = ["Nafta", "Diésel", "Híbrido", "Eléctrico"];
-const CAJAS = ["Manual", "Automática"];
-const MONEDAS = ["USD", "UYU"];
-const anioMaximo = new Date().getFullYear() + 1;
+import { combustibles, cajas, monedas, anioActualMasUno } from "../utils/helpers.js";
 
 const texto = (max) => joi.string().trim().max(max).allow("").default("");
 
@@ -17,9 +13,9 @@ export const vehiculoSchema = joi.object({
         "string.empty": "Ingrese el modelo",
         "any.required": "Ingrese el modelo",
     }),
-    anio: joi.number().integer().min(1950).max(anioMaximo).required().messages({
+    anio: joi.number().integer().min(1950).max(anioActualMasUno).required().messages({
         "number.min": "El año debe ser 1950 o posterior",
-        "number.max": `El año no puede ser mayor a ${anioMaximo}`,
+        "number.max": `El año no puede ser mayor a ${anioActualMasUno}`,
         "number.base": "El año debe ser un número",
         "any.required": "Ingrese el año",
     }),
@@ -31,12 +27,12 @@ export const vehiculoSchema = joi.object({
         "string.empty": "Ingrese la patente",
         "any.required": "Ingrese la patente",
     }),
-    combustible: joi.string().valid(...COMBUSTIBLES).required().messages({
-        "any.only": `El combustible debe ser uno de: ${COMBUSTIBLES.join(", ")}`,
+    combustible: joi.string().valid(...combustibles).required().messages({
+        "any.only": `El combustible debe ser uno de: ${combustibles.join(", ")}`,
         "any.required": "Elija el combustible",
     }),
-    caja: joi.string().valid(...CAJAS).required().messages({
-        "any.only": `La caja debe ser: ${CAJAS.join(" o ")}`,
+    caja: joi.string().valid(...cajas).required().messages({
+        "any.only": `La caja debe ser: ${cajas.join(" o ")}`,
         "any.required": "Elija el tipo de caja",
     }),
     categoria_id: joi.string().trim().required().messages({
@@ -47,8 +43,8 @@ export const vehiculoSchema = joi.object({
         "number.greater": "El precio debe ser mayor a cero",
         "any.required": "Ingrese el precio",
     }),
-    moneda: joi.string().valid(...MONEDAS).required().messages({
-        "any.only": "La moneda debe ser USD o UYU",
+    moneda: joi.string().valid(...monedas).required().messages({
+        "any.only": `La moneda debe ser una de: ${monedas.join(", ")}`,
         "any.required": "Elija la moneda",
     }),
     //obligatorios

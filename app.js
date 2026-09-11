@@ -17,6 +17,8 @@ const ORIGENES_PERMITIDOS = [
     "http://localhost:5174",
 ].filter(Boolean);
 
+app.set("trust proxy", 1);
+
 app.use(cors({
     origin: ORIGENES_PERMITIDOS,
     credentials: true,
