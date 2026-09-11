@@ -1,17 +1,12 @@
 import { prisma } from "../../db.js";
+import { construirBusqueda } from "../utils/helpers.js";
 
 const construirFiltros = ({ estado, marca, categoria_id, busqueda }) => {
     const where = {};
     if (estado) where.estado = estado;
     if (marca) where.marca = { equals: marca, mode: "insensitive" };
     if (categoria_id) where.categoria_id = categoria_id;
-    if (busqueda) {
-        where.OR = [
-            { marca:   { contains: busqueda, mode: "insensitive" } },
-            { modelo:  { contains: busqueda, mode: "insensitive" } },
-            { version: { contains: busqueda, mode: "insensitive" } },
-        ];
-    }
+    if (busqueda) where.AND = construirBusqueda(busqueda, ["marca", "modelo", "version"]);
     return where;
 };
 
@@ -21,13 +16,7 @@ const construirFiltrosPublicos = ({ categoria_id, combustible, precio_max, anio_
     if (combustible) where.combustible = { equals: combustible, mode: "insensitive" };
     if (precio_max) where.precio = { lte: Number(precio_max) };
     if (anio_min) where.anio = { gte: Number(anio_min) };
-    if (busqueda) {
-        where.OR = [
-            { marca:   { contains: busqueda, mode: "insensitive" } },
-            { modelo:  { contains: busqueda, mode: "insensitive" } },
-            { version: { contains: busqueda, mode: "insensitive" } },
-        ];
-    }
+    if (busqueda) where.AND = construirBusqueda(busqueda, ["marca", "modelo", "version"]);
     return where;
 };
 

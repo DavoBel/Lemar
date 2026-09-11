@@ -23,3 +23,10 @@ export const getPagina = req =>{
     }
     return pagina;
 }
+
+export const construirBusqueda = (busqueda, campos) => {
+    const palabras = (busqueda ?? "").trim().split(/\s+/).filter(Boolean).slice(0, 8);
+    return palabras.map((palabra) => ({
+        OR: campos.map((campo) => ({ [campo]: { contains: palabra, mode: "insensitive" } })),
+    }));
+};
