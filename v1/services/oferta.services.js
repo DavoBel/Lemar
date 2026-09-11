@@ -24,3 +24,11 @@ export const getOfertasService = async (filtros, orden, limite, skip) => {
     ]);
     return { datos, total, nuevas };
 };
+
+export const getOfertaByIdService = (id) =>{
+    return prisma.oferta.findUnique({ where: { id } });
+}
+
+export const editarEstadoOfertaService = async (id, estado) => {
+    return prisma.oferta.update({ where: { id }, data: { estado } });
+};
