@@ -1,7 +1,7 @@
 import { getPaginacion } from "../utils/helpers.js";
 import { VehiculoAdminDTO } from "../utils/DTOs/Vehiculo/Vehiculo.admin.dto.js";
 import { VehiculoDetalladoAdminDTO } from "../utils/DTOs/Vehiculo/Vehiculo.detallado.admin.dto.js";
-import { getVehiculosService, getVehiculoByIDService, agregarVehiculoService } from "../services/vehiculos.services.js";
+import { getVehiculosService, getVehiculoByIDService, agregarVehiculoService, editarVehiculoService } from "../services/vehiculos.services.js";
 import { getCategoriaXIdService } from "../services/categoria.services.js";
 import { AppError } from "../utils/AppError.js";
 
@@ -35,4 +35,25 @@ export const agregarVehiculo = async (req, res) => {
     datos.estado = "disponible";
     const vehiculo = await agregarVehiculoService(datos);
     res.status(201).json(new VehiculoDetalladoAdminDTO(vehiculo));
+};
+
+export const editarVehiculo = async (req, res) => {
+    const { id } = req.params;
+    const actual = await getVehiculoByIDService(id);
+    if (!actual) throw new AppError(404, "No se encontró el vehículo.");
+    const datos = {};
+    for (const clave of Object.keys(req.body)) {
+        if (clave in req.validatedBody) datos[clave] = req.validatedBody[clave]; // para borrar atributos con "" que los coloca el .default del schema del alta.
+    }
+    if (Object.keys(datos).length === 0) {
+        throw new AppError(400, "No se envió ningún campo para modificar.");
+    }
+    if (datos.estado === "vendido" && actual.estado !== "vendido")datos.fecha_vendido = new Date();
+    if (datos.estado && datos.estado !== "vendido" && actual.estado === "vendido")datos.fecha_vendido = null;
+    if (datos.categoria_id && datos.categoria_id !== actual.categoria_id) {
+        const categoria = await getCategoriaXIdService(datos.categoria_id);
+        if (!categoria) throw new AppError(400, "La categoría seleccionada no existe.");
+    }
+    const vehiculo = await editarVehiculoService(id, datos);
+    res.status(200).json(new VehiculoDetalladoAdminDTO(vehiculo));
 };
