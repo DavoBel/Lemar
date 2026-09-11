@@ -1,15 +1,10 @@
 import {prisma} from "../../db.js"
+import { construirBusqueda } from "../utils/helpers.js"
 
 const construirFiltros = ({ estado, busqueda }) => {
     const where = {};
     if (estado) where.estado = estado;
-    if (busqueda) {
-        where.OR = [
-            { marca:   { contains: busqueda, mode: "insensitive" } },
-            { modelo:  { contains: busqueda, mode: "insensitive" } },
-            { version: { contains: busqueda, mode: "insensitive" } },
-        ];
-    }
+    if (busqueda) where.AND = construirBusqueda(busqueda, ["marca", "modelo", "version"]);
     return where;
 };
 
