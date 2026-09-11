@@ -15,6 +15,12 @@ export const getCategoriaXNombreService = async (nombre)=>{
     });
 }
 
+export const getCategoriaXIdService = async (id) => {
+    return prisma.categoria.findUnique({
+        where: { id },
+    });
+};
+
 export const agregarCategoriaService = async (nombre) => {
     return prisma.categoria.create({ data: { nombre } });
 }
