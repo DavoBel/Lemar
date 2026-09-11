@@ -1,5 +1,5 @@
-export const getPaginacion = (req) => {
-    const limite = getLimite(req);
+export const getPaginacion = (req, limiteFijo = null) => {
+    const limite = limiteFijo ?? getLimite(req);
     const pagina = getPagina(req);
     const skip = (pagina - 1) * limite;
     return { limite, pagina, skip };

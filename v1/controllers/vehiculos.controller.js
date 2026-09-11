@@ -1,7 +1,15 @@
 import { getPaginacion } from "../utils/helpers.js";
 import { VehiculoAdminDTO } from "../utils/DTOs/Vehiculo/Vehiculo.admin.dto.js";
 import { VehiculoDetalladoAdminDTO } from "../utils/DTOs/Vehiculo/Vehiculo.detallado.admin.dto.js";
-import { getVehiculosService, getVehiculoByIDService, agregarVehiculoService, editarVehiculoService, eliminarVehiculoService } from "../services/vehiculos.services.js";
+import { VehiculoPublicoDTO } from "../utils/DTOs/Vehiculo/Vehiculo.publico.dto.js";
+import { 
+    getVehiculosService, 
+    getVehiculoByIDService, 
+    agregarVehiculoService, 
+    editarVehiculoService, 
+    eliminarVehiculoService, 
+    getVehiculosPublicosService 
+} from "../services/vehiculos.services.js";
 import { getCategoriaXIdService } from "../services/categoria.services.js";
 import { AppError } from "../utils/AppError.js";
 
@@ -67,4 +75,20 @@ export const eliminarVehiculo = async (req, res) => {
     }
     await eliminarVehiculoService(id);
     res.status(204).send();
+};
+
+export const obtenerVehiculosPublicos = async (req, res) => {
+    const { limite, pagina, skip } = getPaginacion(req, 10);
+    const { categoria_id, combustible, precio_max, anio_min, busqueda, orden } = req.query;
+
+    const { datos, total } = await getVehiculosPublicosService(
+        { categoria_id, combustible, precio_max, anio_min, busqueda }, orden, limite, skip
+    );
+
+    res.status(200).json({
+        datos: datos.map((v) => new VehiculoPublicoDTO(v)),
+        total,
+        pagina,
+        paginas: Math.ceil(total / limite),
+    });
 };
