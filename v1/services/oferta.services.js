@@ -32,3 +32,7 @@ export const getOfertaByIdService = (id) =>{
 export const editarEstadoOfertaService = async (id, estado) => {
     return prisma.oferta.update({ where: { id }, data: { estado } });
 };
+
+export const editarTasacionService = async (id, datos) => {
+    return await prisma.oferta.update({ where: { id }, data: datos });
+};
