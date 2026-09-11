@@ -78,6 +78,13 @@ export const getVehiculoByIDService = async (id) => {
     });
 };
 
+export const getVehiculoPublicoByIdService = async (id) => {
+    return prisma.vehiculo.findFirst({
+        where: { id, estado: { in: ["disponible", "reservado"] } },
+        include: { categoria: true },
+    });
+};
+
 export const agregarVehiculoService = async (datos) => {
     return prisma.vehiculo.create({
         data: datos,

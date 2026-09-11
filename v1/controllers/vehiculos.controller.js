@@ -2,6 +2,7 @@ import { getPaginacion } from "../utils/helpers.js";
 import { VehiculoAdminDTO } from "../utils/DTOs/Vehiculo/Vehiculo.admin.dto.js";
 import { VehiculoDetalladoAdminDTO } from "../utils/DTOs/Vehiculo/Vehiculo.detallado.admin.dto.js";
 import { VehiculoPublicoDTO } from "../utils/DTOs/Vehiculo/Vehiculo.publico.dto.js";
+import { VehiculoDetalladoPublicoDTO } from "../utils/DTOs/Vehiculo/Vehiculo.detallado.publico.dto.js";
 import { 
     getVehiculosService, 
     getVehiculoByIDService, 
@@ -10,6 +11,7 @@ import {
     eliminarVehiculoService, 
     getVehiculosPublicosService 
 } from "../services/vehiculos.services.js";
+import { getVehiculoPublicoByIdService } from "../services/vehiculos.services.js";
 import { getCategoriaXIdService } from "../services/categoria.services.js";
 import { AppError } from "../utils/AppError.js";
 
@@ -29,11 +31,34 @@ export const obtenerVehiculos = async (req, res) => {
     });
 };
 
+export const obtenerVehiculosPublicos = async (req, res) => {
+    const { limite, pagina, skip } = getPaginacion(req, 10);
+    const { categoria_id, combustible, precio_max, anio_min, busqueda, orden } = req.query;
+
+    const { datos, total } = await getVehiculosPublicosService(
+        { categoria_id, combustible, precio_max, anio_min, busqueda }, orden, limite, skip
+    );
+
+    res.status(200).json({
+        datos: datos.map((v) => new VehiculoPublicoDTO(v)),
+        total,
+        pagina,
+        paginas: Math.ceil(total / limite),
+    });
+};
+
 export const obtenerVehiculoID = async (req, res) => {
     const { id } = req.params;
     const vehiculo = await getVehiculoByIDService(id);
     if (!vehiculo) throw new AppError(404, "No se encontró el vehículo.");
     res.status(200).json(new VehiculoDetalladoAdminDTO(vehiculo));
+};
+
+export const obtenerVehiculoPublicoID = async (req, res) => {
+    const { id } = req.params;
+    const vehiculo = await getVehiculoPublicoByIdService(id);
+    if (!vehiculo) throw new AppError(404, "No se encontró el vehículo.");
+    res.status(200).json(new VehiculoDetalladoPublicoDTO(vehiculo));
 };
 
 export const agregarVehiculo = async (req, res) => {
@@ -75,20 +100,4 @@ export const eliminarVehiculo = async (req, res) => {
     }
     await eliminarVehiculoService(id);
     res.status(204).send();
-};
-
-export const obtenerVehiculosPublicos = async (req, res) => {
-    const { limite, pagina, skip } = getPaginacion(req, 10);
-    const { categoria_id, combustible, precio_max, anio_min, busqueda, orden } = req.query;
-
-    const { datos, total } = await getVehiculosPublicosService(
-        { categoria_id, combustible, precio_max, anio_min, busqueda }, orden, limite, skip
-    );
-
-    res.status(200).json({
-        datos: datos.map((v) => new VehiculoPublicoDTO(v)),
-        total,
-        pagina,
-        paginas: Math.ceil(total / limite),
-    });
 };
