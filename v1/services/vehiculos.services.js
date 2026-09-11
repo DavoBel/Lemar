@@ -46,3 +46,11 @@ export const agregarVehiculoService = async (datos) => {
         include: { categoria: true },
     });
 };
+
+export const editarVehiculoService = async (id, datos) => {
+    return prisma.vehiculo.update({
+        where: { id },
+        data: datos,
+        include: { categoria: true },
+    });
+};

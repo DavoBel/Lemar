@@ -63,4 +63,13 @@ export const vehiculoSchema = joi.object({
     fotos: joi.array().items(joi.string().trim()).default([]),
 });
 
+export const vehiculoPatchSchema = vehiculoSchema.fork(
+    Object.keys(vehiculoSchema.describe().keys),
+    (campo) => campo.optional()
+).append({
+    estado: joi.string().valid("disponible", "reservado", "vendido").messages({
+        "any.only": "El estado debe ser: disponible, reservado o vendido",
+    }),
+});
+
 export default vehiculoSchema;
