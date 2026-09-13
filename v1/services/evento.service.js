@@ -7,9 +7,15 @@ export const getEventosService = async (desde, hasta) => {
     });
 };
 
-export const getSolapadosService = async (inicio, fin) => {
+export const getEventoByIdService = async (id) => {
+    return prisma.evento.findUnique({
+        where: { id },
+    });
+};
+
+export const getSolapadosService = async (inicio, fin, idExcluir = null) => {
     return prisma.evento.findMany({
-        where: { inicio: { lt: fin }, fin: { gt: inicio } },
+        where: { inicio: { lt: fin }, fin: { gt: inicio }, ...(idExcluir !== null ? { id: { not: idExcluir } } : {}) },
         orderBy: { inicio: "asc" },
         take: 5,
     });
@@ -17,4 +23,11 @@ export const getSolapadosService = async (inicio, fin) => {
 
 export const crearEventoService = async (datos) => {
     return prisma.evento.create({ data: datos });
+};
+
+export const editarEventoService = async (id, datos) => {
+    return prisma.evento.update({
+        where: { id },
+        data: datos,
+    });
 };

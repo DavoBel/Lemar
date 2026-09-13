@@ -1,6 +1,6 @@
 import { AppError } from '../utils/AppError.js';
 import { getRangoFechas } from '../utils/helpers.js';
-import { getEventosService, getSolapadosService, crearEventoService } from '../services/evento.service.js';
+import { getEventosService, getSolapadosService, crearEventoService, editarEventoService, getEventoByIdService } from '../services/evento.service.js';
 
 export const getEventos = async (req, res, next) => {
     const { desde: crudoDesde, hasta: crudoHasta } = req.query;
@@ -16,8 +16,26 @@ export const getEventos = async (req, res, next) => {
 
 export const crearEvento = async (req, res) => {
     const datos = req.validatedBody;
-    const solapamientos = await getSolapadosService(datos.inicio, datos.fin);
+    const solapamientos = await getSolapadosService(datos.inicio, datos.fin, null);
     const evento = await crearEventoService(datos);
     res.status(201).json({ evento, solapamientos });
 };
 
+export const editarEvento = async (req, res) => {
+    const { id } = req.params;
+    const actual = await getEventoByIdService(id);
+    if (!actual) throw new AppError(404, "No se encontró el evento.");
+    const datos = {};
+    for (const clave of Object.keys(req.body)) {
+        if (clave in req.validatedBody) datos[clave] = req.validatedBody[clave];
+    }
+    if (Object.keys(datos).length === 0) {
+        throw new AppError(400, "No se envió ningún campo para modificar.");
+    }
+    const inicioFinal = datos.inicio ?? actual.inicio;
+    const finFinal = datos.fin ?? actual.fin;
+    if (finFinal <= inicioFinal)throw new AppError(400, "El fin tiene que ser posterior al inicio.");
+    const solapamientos = await getSolapadosService(inicioFinal, finFinal, id);
+    const evento = await editarEventoService(id, datos);
+    res.status(200).json({ evento, solapamientos });
+};

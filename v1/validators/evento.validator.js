@@ -38,3 +38,12 @@ export const eventoSchema = joi.object({
         "string.max": "La nota no puede superar los 1000 caracteres",
     }),
 });
+
+export const eventoPatchSchema = eventoSchema
+    .fork(Object.keys(eventoSchema.describe().keys), (campo) => campo.optional())
+    .keys({
+        fin: joi.date().iso().messages({
+            "date.base": "La fecha y hora de fin no es válida",
+            "date.format": "La fecha y hora de fin no es válida",
+        }),
+});
