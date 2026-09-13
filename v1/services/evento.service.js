@@ -31,3 +31,7 @@ export const editarEventoService = async (id, datos) => {
         data: datos,
     });
 };
+
+export const eliminarEventoService = async (id) => {
+    await prisma.evento.delete({ where: { id } });
+};
