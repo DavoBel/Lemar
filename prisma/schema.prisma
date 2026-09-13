@@ -43,6 +43,7 @@ enum EventoTipo {
   prueba
   tasacion
   entrega
+  otro
 }
 
 enum Roles {
