@@ -1,3 +1,9 @@
+export const combustibles = ["Nafta", "Diésel", "Híbrido", "Eléctrico"];
+export const cajas = ["Manual", "Automática"];
+export const monedas = ["USD", "UYU"];
+export const estadosOferta = ["nueva", "en_revision", "tasada", "rechazada", "aceptada"];
+export const anioActualMasUno = new Date().getFullYear() + 1;
+
 export const getPaginacion = (req, limiteFijo = null) => {
     const limite = limiteFijo ?? getLimite(req);
     const pagina = getPagina(req);
@@ -31,9 +37,16 @@ export const construirBusqueda = (busqueda, campos) => {
     }));
 };
 
-export const combustibles = ["Nafta", "Diésel", "Híbrido", "Eléctrico"];
-export const cajas = ["Manual", "Automática"];
-export const monedas = ["USD", "UYU"];
-export const estadosOferta = ["nueva", "en_revision", "tasada", "rechazada", "aceptada"];
-export const anioActualMasUno = new Date().getFullYear() + 1;
+export const getRangoFechas = (req) => {
+    const { desde, hasta } = req.query;
+    const inicioMes = new Date();
+    inicioMes.setDate(1);
+    inicioMes.setHours(0, 0, 0, 0);
+    const finMes = new Date(inicioMes);
+    finMes.setMonth(finMes.getMonth() + 1);
 
+    return {
+        desde: desde ? new Date(desde) : inicioMes,
+        hasta: hasta ? new Date(hasta) : finMes,
+    };
+};
