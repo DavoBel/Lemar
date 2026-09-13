@@ -1,6 +1,6 @@
 import { AppError } from '../utils/AppError.js';
 import { getRangoFechas } from '../utils/helpers.js';
-import { getEventosService, getSolapadosService, crearEventoService, editarEventoService, getEventoByIdService } from '../services/evento.service.js';
+import { getEventosService, getSolapadosService, crearEventoService, editarEventoService, getEventoByIdService, eliminarEventoService } from '../services/evento.service.js';
 
 export const getEventos = async (req, res, next) => {
     const { desde: crudoDesde, hasta: crudoHasta } = req.query;
@@ -38,4 +38,10 @@ export const editarEvento = async (req, res) => {
     const solapamientos = await getSolapadosService(inicioFinal, finFinal, id);
     const evento = await editarEventoService(id, datos);
     res.status(200).json({ evento, solapamientos });
+};
+
+export const eliminarEvento = async (req, res) => {
+    const { id } = req.params;
+    await eliminarEventoService(id);
+    res.status(204).send();
 };
