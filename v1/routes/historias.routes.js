@@ -1,5 +1,5 @@
 import express from 'express';
-import { registrarHistoria } from '../controllers/user.controller.js';
+import { registrarHistoria } from '../controllers/usuario.controller.js';
 
 const router = express.Router();
 
