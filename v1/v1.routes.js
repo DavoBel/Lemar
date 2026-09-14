@@ -7,6 +7,7 @@ import vehiculosPublicosRouter from "./routes/vehiculos.publicos.routes.js";
 import ofertasRouter from "./routes/ofertas.routes.js";
 import ofertasPublicasRouter from "./routes/ofertas.publicas.routes.js";
 import eventoRouter from "./routes/evento.routes.js";
+import historiaRouter from "./routes/historia.routes.js";
 
 const router = express.Router({mergeParams: true});
 
@@ -20,6 +21,8 @@ router.use('/vehiculos', vehiculosRouter);
 router.use('/categorias', categoriasRouter);
 router.use('/ofertas', ofertasRouter);  
 router.use('/eventos', eventoRouter);
+router.use('/historias', historiaRouter);
+
 
 
 
