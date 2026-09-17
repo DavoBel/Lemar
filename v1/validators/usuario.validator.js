@@ -22,3 +22,12 @@ export const usuarioSchema = joi.object({
         "any.required": "Elija el rol",
     }),
 });
+
+export const usuarioPatchSchema = joi.object({
+    rol: joi.string().valid(...roles).messages({
+        "any.only": "El rol debe ser admin o empleado",
+    }),
+    activo: joi.boolean().messages({
+        "boolean.base": "El campo activo debe ser verdadero o falso",
+    }),
+});
