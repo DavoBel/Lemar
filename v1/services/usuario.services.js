@@ -40,5 +40,13 @@ export const crearUsuarioService = async (usuario) => {
     });
 };
 
+export const editarUsuarioService = async (id, datos) => {
+    return prisma.usuario.update({
+        where: { id },
+        data: datos,
+        select: { id: true, email: true, nombre_completo: true, rol: true,
+                  activo: true, historias: true, fecha_creacion: true, fecha_modificacion: true },
+    });
+};
 
 
