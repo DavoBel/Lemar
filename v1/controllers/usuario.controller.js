@@ -1,4 +1,6 @@
-import { incrementarHistoriasService, getUsuariosService } from '../services/usuario.services.js';
+import { incrementarHistoriasService, getUsuariosService, getUsuarioXEmail, crearUsuarioService } from '../services/usuario.services.js';
+import bcrypt from 'bcryptjs';
+import { AppError } from '../utils/AppError.js';
 import { UsuarioDTO } from '../utils/DTOs/usuario/Usuario.dto.js';
 import { getPaginacion } from '../utils/helpers.js';
 
@@ -18,4 +20,13 @@ export const obtenerUsuarios = async (req, res) => {
     });
 };
 
+export const crearUsuario = async (req, res) => {
+    const email = req.validatedBody.email.toLowerCase();
+    const {nombre_completo, contrasena, rol } = req.validatedBody;
+    const existente = await getUsuarioXEmail(email);
+    if (existente) throw new AppError(409, `Ya existe una cuenta con el email ${email}.`);
+    const hash = await bcrypt.hash(contrasena, 10);
+    const usuario = await crearUsuarioService({ email, nombre_completo, contrasena: hash, rol, activo: true });
+    res.status(201).json(new UsuarioDTO(usuario));
+};
 
