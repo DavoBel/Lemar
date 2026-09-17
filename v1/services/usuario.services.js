@@ -32,5 +32,13 @@ export const incrementarHistoriasService = async (id) => {
     });
 };
 
+export const crearUsuarioService = async (usuario) => {
+    return prisma.usuario.create({
+        data: usuario,
+        select: { id: true, email: true, nombre_completo: true, rol: true,
+                  activo: true, historias: true, fecha_creacion: true, fecha_modificacion: true },
+    });
+};
+
 
 

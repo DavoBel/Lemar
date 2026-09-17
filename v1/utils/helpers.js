@@ -4,6 +4,7 @@ export const monedas = ["USD", "UYU"];
 export const estadosOferta = ["nueva", "en_revision", "tasada", "rechazada", "aceptada"];
 export const anioActualMasUno = new Date().getFullYear() + 1;
 export const tiposDeEvento = ["visita", "prueba", "tasacion", "entrega", "otro"];
+export const roles = ["admin", "empleado"];
 
 export const getPaginacion = (req, limiteFijo = null) => {
     const limite = limiteFijo ?? getLimite(req);
