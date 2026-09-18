@@ -1,5 +1,6 @@
 import { prisma } from "../../db.js";
 import { construirBusqueda } from "../utils/helpers.js";
+import { cloudinary } from "../utils/cloudinary.js";
 
 const construirFiltros = ({ estado, marca, categoria_id, busqueda }) => {
     const where = {};
@@ -93,3 +94,11 @@ export const eliminarVehiculoService = async (id) => {
     await prisma.vehiculo.delete({ where: { id } });
 };
 
+export const subirFotoService = (buffer) =>
+    new Promise((resolve, reject) => {
+        const stream = cloudinary.uploader.upload_stream(
+            { folder: "lemar/vehiculos", resource_type: "image" },
+            (error, resultado) => (error ? reject(error) : resolve(resultado.secure_url)),
+        );
+        stream.end(buffer);
+    });

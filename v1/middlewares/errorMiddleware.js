@@ -28,5 +28,11 @@ export const errorMiddleware = (err, req, res, next) => {
 
   if (err instanceof Prisma.PrismaClientValidationError) return res.status(400).json({ error: "Los datos enviados no tienen el formato esperado." });
   
+  if (err.name === "MulterError") {
+    if (err.code === "LIMIT_FILE_SIZE")  return res.status(400).json({ error: "Cada foto puede pesar hasta 10 MB." });
+    if (err.code === "LIMIT_FILE_COUNT") return res.status(400).json({ error: "Se pueden subir hasta 10 fotos por vez." });
+    return res.status(400).json({ error: "No se pudo procesar el archivo enviado." });
+}
+
   return res.status(500).json({ error: "Ocurrió un error inesperado. Intentá de nuevo." });
 }

@@ -14,7 +14,7 @@ import {
 import { getVehiculoPublicoByIdService } from "../services/vehiculos.services.js";
 import { getCategoriaXIdService } from "../services/categoria.services.js";
 import { AppError } from "../utils/AppError.js";
-
+import { subirFotoService } from "../services/vehiculos.services.js";
 
 export const obtenerVehiculos = async (req, res) => {
     const { limite, pagina, skip } = getPaginacion(req);
@@ -100,4 +100,10 @@ export const eliminarVehiculo = async (req, res) => {
     }
     await eliminarVehiculoService(id);
     res.status(204).send();
+};
+
+export const subirFotos = async (req, res) => {
+    if (!req.files?.length) throw new AppError(400, "No se recibió ninguna foto.");
+    const urls = await Promise.all(req.files.map((f) => subirFotoService(f.buffer)));
+    res.status(201).json({ urls });
 };
