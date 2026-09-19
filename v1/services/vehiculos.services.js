@@ -96,9 +96,56 @@ export const eliminarVehiculoService = async (id) => {
 
 export const subirFotoService = (buffer) =>
     new Promise((resolve, reject) => {
-        const stream = cloudinary.uploader.upload_stream(
-            { folder: "lemar/vehiculos", resource_type: "image" },
-            (error, resultado) => (error ? reject(error) : resolve(resultado.secure_url)),
-        );
-        stream.end(buffer);
-    });
+    const stream = cloudinary.uploader.upload_stream(
+        { folder: "lemar/vehiculos", resource_type: "image" },
+        (error, resultado) => (error ? reject(error) : resolve(resultado.secure_url)),
+    );
+    stream.end(buffer);
+});
+
+const publicIdDesdeUrl = (url) => {
+    if (typeof url !== "string" || !url.includes("res.cloudinary.com")) return null;
+    const m = url.match(/\/v\d+\/(.+)\.\w+$/);
+    return m ? m[1] : null;
+};
+
+export const borrarFotosService = async (urls = []) => {
+    const ids = urls.map(publicIdDesdeUrl).filter(Boolean);
+    if (ids.length === 0) return { borradas: 0 };
+    try {
+        const r = await cloudinary.api.delete_resources(ids);
+        return { borradas: Object.values(r.deleted ?? {}).filter((v) => v === "deleted").length };
+    } catch (error) {
+        console.error("[fotos] no se pudieron borrar:", ids, error.message);
+        return { borradas: 0, error: true };
+    }
+};
+
+export const limpiarFotosHuerfanasService = async ({ horasDeGracia = 24 } = {}) => {
+    const vehiculos = await prisma.vehiculo.findMany({ select: { fotos: true } });
+    const referenciadas = new Set(
+        vehiculos.flatMap((v) => v.fotos).map(publicIdDesdeUrl).filter(Boolean),
+    );
+
+    const limite = Date.now() - horasDeGracia * 60 * 60 * 1000;
+    const huerfanas = [];
+    let cursor;
+
+    do {
+        const pagina = await cloudinary.api.resources({
+            type: "upload",
+            prefix: "lemar/vehiculos/",
+            max_results: 500,
+            next_cursor: cursor,
+        });
+        for (const r of pagina.resources) {
+            if (referenciadas.has(r.public_id)) continue;
+            if (new Date(r.created_at).getTime() > limite) continue;
+            huerfanas.push(r.public_id);
+        }
+        cursor = pagina.next_cursor;
+    } while (cursor);
+
+    if (huerfanas.length) await cloudinary.api.delete_resources(huerfanas);
+    return { revisadas: referenciadas.size, huerfanas: huerfanas.length };
+};

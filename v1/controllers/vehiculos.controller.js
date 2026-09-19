@@ -9,7 +9,8 @@ import {
     agregarVehiculoService, 
     editarVehiculoService, 
     eliminarVehiculoService, 
-    getVehiculosPublicosService 
+    getVehiculosPublicosService,
+    borrarFotosService,
 } from "../services/vehiculos.services.js";
 import { getVehiculoPublicoByIdService } from "../services/vehiculos.services.js";
 import { getCategoriaXIdService } from "../services/categoria.services.js";
@@ -87,7 +88,14 @@ export const editarVehiculo = async (req, res) => {
         const categoria = await getCategoriaXIdService(datos.categoria_id);
         if (!categoria) throw new AppError(400, "La categoría seleccionada no existe.");
     }
+    
     const vehiculo = await editarVehiculoService(id, datos);
+
+    if (datos.fotos) {
+        const quitadas = actual.fotos.filter((f) => !datos.fotos.includes(f));
+        await borrarFotosService(quitadas);
+    }
+
     res.status(200).json(new VehiculoDetalladoAdminDTO(vehiculo));
 };
 
@@ -99,6 +107,7 @@ export const eliminarVehiculo = async (req, res) => {
         throw new AppError(409, "No se puede borrar un vehículo vendido: se perdería el historial de ventas.");
     }
     await eliminarVehiculoService(id);
+    await borrarFotosService(vehiculo.fotos);
     res.status(204).send();
 };
 
