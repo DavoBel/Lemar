@@ -121,7 +121,7 @@ export const borrarFotosService = async (urls = []) => {
     }
 };
 
-export const limpiarFotosHuerfanasService = async ({ horasDeGracia = 24 } = {}) => {
+export const limpiarFotosHuerfanasService = async ({ horasDeGracia = 24, soloListar = false } = {}) => {
     const vehiculos = await prisma.vehiculo.findMany({ select: { fotos: true } });
     const referenciadas = new Set(
         vehiculos.flatMap((v) => v.fotos).map(publicIdDesdeUrl).filter(Boolean),
@@ -146,6 +146,6 @@ export const limpiarFotosHuerfanasService = async ({ horasDeGracia = 24 } = {}) 
         cursor = pagina.next_cursor;
     } while (cursor);
 
-    if (huerfanas.length) await cloudinary.api.delete_resources(huerfanas);
-    return { revisadas: referenciadas.size, huerfanas: huerfanas.length };
+    if (huerfanas.length && !soloListar) await cloudinary.api.delete_resources(huerfanas);
+    return { revisadas: referenciadas.size, huerfanas: huerfanas.length, ids: huerfanas };
 };
