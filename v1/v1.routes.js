@@ -1,6 +1,7 @@
 import express from 'express';
 import {authorizationMiddleware} from "./middlewares/authorization.middleware.js";
 import { adminOnlyMiddleware } from "./middlewares/adminOnly.middleware.js";
+import { obtenerCategorias } from "./controllers/categorias.controller.js";
 import authRouter from "./routes/auth.routes.js";
 import categoriasRouter from "./routes/categorias.routes.js";
 import vehiculosRouter from "./routes/vehiculos.routes.js";
@@ -18,6 +19,7 @@ const router = express.Router({mergeParams: true});
 router.use('/auth', authRouter);
 router.use('/vehiculos/publicos', vehiculosPublicosRouter);
 router.use('/ofertas/publicas', ofertasPublicasRouter);   // ← nuevo
+router.get("/categorias/", obtenerCategorias);
 router.use(authorizationMiddleware);
 //rutas protegidas
 router.use('/vehiculos', vehiculosRouter);
