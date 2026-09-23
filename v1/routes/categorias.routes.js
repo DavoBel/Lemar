@@ -5,7 +5,6 @@ import categoriaSchema from "../validators/categoria.validator.js";
 
 const router = express.Router();
 
-router.get("/", obtenerCategorias);
 router.post("/", validateBodyMiddleware(categoriaSchema), agregarCategoria);
 router.delete("/:id", eliminarCategoria);
 

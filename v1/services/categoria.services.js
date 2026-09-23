@@ -1,7 +1,9 @@
 import { prisma } from "../../db.js";
 
 export const getCategoriasService = async () => {
-    const categorias = await prisma.categoria.findMany();
+    const categorias = await prisma.categoria.findMany({
+        select: { id: true, nombre: true },
+    });
     /*
         No use orderBy: { nombre: "asc" } porque la base usa la collation C.UTF-8, que ordena por valor de byte y pone las mayúsculas
         antes que las minúsculas, con orderBy de Prisma, SUV quedaría antes que Sedán. Por eso se ordena en JavaScript.
