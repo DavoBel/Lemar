@@ -6,10 +6,12 @@ export class VehiculoAdminDTO {
         this.version = vehiculo.version;
         this.anio = vehiculo.anio;
         this.km = vehiculo.km;
+        this.mostrar_km = vehiculo.mostrar_km;
         this.patente = vehiculo.patente;
         this.combustible = vehiculo.combustible;
         this.caja = vehiculo.caja;
         this.precio = vehiculo.precio;
+        this.mostrar_precio = vehiculo.mostrar_precio;
         this.moneda = vehiculo.moneda;
         this.foto_portada = vehiculo.fotos?.[0] ?? null;
         this.cantidad_fotos = vehiculo.fotos?.length ?? 0;

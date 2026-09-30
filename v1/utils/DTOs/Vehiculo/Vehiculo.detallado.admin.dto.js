@@ -6,6 +6,7 @@ export class VehiculoDetalladoAdminDTO {
         this.version = vehiculo.version;
         this.anio = vehiculo.anio;
         this.km = vehiculo.km;
+        this.mostrar_km = vehiculo.mostrar_km;
         this.patente = vehiculo.patente;
         this.combustible = vehiculo.combustible;
         this.caja = vehiculo.caja;
@@ -16,6 +17,7 @@ export class VehiculoDetalladoAdminDTO {
         this.caracteristicas = vehiculo.caracteristicas;
         this.categoria = vehiculo.categoria?.nombre ?? null;
         this.precio = vehiculo.precio;
+        this.mostrar_precio = vehiculo.mostrar_precio;
         this.precio_compra = vehiculo.precio_compra;
         this.moneda = vehiculo.moneda;
         this.descripcion = vehiculo.descripcion;
