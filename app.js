@@ -13,6 +13,8 @@ const app = express();
 const ORIGENES_PERMITIDOS = [
     process.env.URL_PANEL,
     process.env.URL_SITIO,
+    "http://localhost:8080",
+    "http://localhost:8081",
     "http://localhost:5173",
     "http://localhost:5174",
 ].filter(Boolean);
