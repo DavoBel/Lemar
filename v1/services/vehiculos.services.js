@@ -15,15 +15,25 @@ const construirFiltrosPublicos = ({ categoria_id, combustible, precio_max, anio_
     const where = { estado: { in: ["disponible", "reservado"] } };
     if (categoria_id) where.categoria_id = categoria_id;
     if (combustible) where.combustible = { equals: combustible, mode: "insensitive" };
-    if (precio_max) where.precio = { lte: Number(precio_max) };
+    // Un vehiculo con el precio oculto entra igual: si se excluyera, comparando
+    // los resultados de dos precio_max distintos se deduciria su rango.
+    // where.OR esta libre porque la busqueda usa where.AND.
+    if (precio_max) {
+        where.OR = [
+            { mostrar_precio: false },
+            { precio: { lte: Number(precio_max) } },
+        ];
+    }
     if (anio_min) where.anio = { gte: Number(anio_min) };
     if (busqueda) where.AND = construirBusqueda(busqueda, ["marca", "modelo", "version"]);
     return where;
 };
 
 const ORDENES = {
-    precio_asc:  [{ precio: "asc" },          { id: "desc" }],
-    precio_desc: [{ precio: "desc" },         { id: "desc" }],
+    // mostrar_precio "desc" pone los true primero, asi los de precio oculto
+    // quedan todos al final y su posicion no revela entre que valores cae.
+    precio_asc:  [{ mostrar_precio: "desc" }, { precio: "asc" },  { id: "desc" }],
+    precio_desc: [{ mostrar_precio: "desc" }, { precio: "desc" }, { id: "desc" }],
     anio_desc:   [{ anio: "desc" },           { id: "desc" }],
     recientes:   [{ fecha_creacion: "desc" }, { id: "desc" }],
 };

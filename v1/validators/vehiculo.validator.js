@@ -57,6 +57,8 @@ export const vehiculoSchema = joi.object({
     caracteristicas: joi.array().items(joi.string().trim().max(60)).default([]),
     precio_compra: joi.number().integer().min(0).allow(null).default(null),
     fotos: joi.array().items(joi.string().trim()).default([]),
+    mostrar_precio: joi.boolean().default(true),
+    mostrar_km: joi.boolean().default(true),
 });
 
 export const vehiculoPatchSchema = vehiculoSchema.fork(

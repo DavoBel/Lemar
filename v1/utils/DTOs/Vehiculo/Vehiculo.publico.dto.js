@@ -5,12 +5,12 @@ export class VehiculoPublicoDTO {
         this.modelo = vehiculo.modelo;
         this.version = vehiculo.version;
         this.anio = vehiculo.anio;
-        this.km = vehiculo.km;
+        this.km = vehiculo.mostrar_km ? vehiculo.km : null;
         this.combustible = vehiculo.combustible;
         this.caja = vehiculo.caja; //opcional
         this.color = vehiculo.color;//opcional
         this.categoria = vehiculo.categoria?.nombre ?? null;
-        this.precio = vehiculo.precio;
+        this.precio = vehiculo.mostrar_precio ? vehiculo.precio : null;
         this.moneda = vehiculo.moneda;
         this.estado = vehiculo.estado;
         this.foto_portada = vehiculo.fotos?.[0] ?? null;

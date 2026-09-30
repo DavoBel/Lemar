@@ -5,7 +5,7 @@ export class VehiculoDetalladoPublicoDTO {
         this.modelo = vehiculo.modelo;
         this.version = vehiculo.version;
         this.anio = vehiculo.anio;
-        this.km = vehiculo.km;
+        this.km = vehiculo.mostrar_km ? vehiculo.km : null;
         this.combustible = vehiculo.combustible;
         this.caja = vehiculo.caja;
         this.color = vehiculo.color;
@@ -14,7 +14,7 @@ export class VehiculoDetalladoPublicoDTO {
         this.potencia = vehiculo.potencia;
         this.caracteristicas = vehiculo.caracteristicas;
         this.categoria = vehiculo.categoria?.nombre ?? null;
-        this.precio = vehiculo.precio;
+        this.precio = vehiculo.mostrar_precio ? vehiculo.precio : null;
         this.moneda = vehiculo.moneda;
         this.descripcion = vehiculo.descripcion;
         this.fotos = vehiculo.fotos;

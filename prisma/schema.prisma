@@ -69,6 +69,7 @@ model Vehiculo {
   version     String @default("")
   anio        Int
   km          Int
+  mostrar_km  Boolean @default(true)
   patente     String
   combustible String
   caja        String
@@ -82,8 +83,9 @@ model Vehiculo {
   categoria_id String
   categoria    Categoria @relation(fields: [categoria_id], references: [id], onDelete: Restrict)
 
-  precio        Int
-  precio_compra Int?
+  precio         Int
+  mostrar_precio Boolean @default(true)
+  precio_compra  Int?
   moneda        Moneda
   descripcion   String @db.Text
 
